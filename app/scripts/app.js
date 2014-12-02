@@ -18,12 +18,19 @@ angular
   .config(function ($routeProvider) {
     $routeProvider
       .when('/', {
-        templateUrl: 'views/main.html',
-        controller: 'MainCtrl'
+        redirectTo: '//app.commonscloud.org/'
       })
-      .when('/about', {
-        templateUrl: 'views/about.html',
-        controller: 'AboutCtrl'
+      .when('/form/:templateId', {
+        templateUrl: templateUrl,
+        controller: 'FormCtrl',
+        resolve: {
+          template: function(Template, $route) {
+            return Template.GetTemplate($route.current.params.templateId);
+          },
+          fields: function(Field, $route) {
+            return Field.GetPreparedFields($route.current.params.templateId);
+          }
+        }
       })
       .otherwise({
         redirectTo: '/'
