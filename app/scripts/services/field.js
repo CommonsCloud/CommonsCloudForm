@@ -3,7 +3,7 @@
 angular.module('commonsCloudFormApp')
   .provider('Field', function () {
 
-    this.$get = ['$resource', function ($resource) {
+    this.$get = ['$resource', 'Feature', function ($resource, Feature) {
 
       var Field = $resource('//api.commonscloud.org/v2/templates/:templateId/fields/:fieldId.json', {
 
@@ -41,6 +41,14 @@ angular.module('commonsCloudFormApp')
 
           if (field.data_type === 'list') {
             field.options = field.options.split(',');
+          } else if (field.data_type === 'relationship') {
+            console.log('Found relationship for field', field);
+            Feature.GetFeatures({
+              storage: field.relationship,
+              results_per_page: 100
+            }).then(function(response) {
+              field.options = response.response.features;
+            });
           }
 
           processed_fields.push(field);

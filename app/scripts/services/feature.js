@@ -88,6 +88,7 @@ angular.module('commonsCloudFormApp')
 
         var promise = Feature.query({
             storage: options.storage,
+            results_per_page: options.results_per_page,
             page: (options.page === undefined || options.page === null) ? 1: options.page,
             q: {
               'order_by': [
