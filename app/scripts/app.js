@@ -13,13 +13,17 @@ angular
     'ngResource',
     'ngRoute',
     'ngSanitize',
-    'ngTouch'
+    'ngTouch',
+    'leaflet-directive',
+    'angularFileUpload',
+    'geolocation',
+    'monospaced.elastic'
   ])
-  .config(function ($routeProvider) {
+  .config(['$routeProvider', '$locationProvider', '$httpProvider', function($routeProvider, $locationProvider, $httpProvider) {
+
+    var templateUrl = '/views/main.html';
+
     $routeProvider
-      .when('/', {
-        redirectTo: '//app.commonscloud.org/'
-      })
       .when('/form/:templateId', {
         templateUrl: templateUrl,
         controller: 'FormCtrl',
@@ -31,8 +35,7 @@ angular
             return Field.GetPreparedFields($route.current.params.templateId);
           }
         }
-      })
-      .otherwise({
-        redirectTo: '/'
       });
-  });
+
+    $locationProvider.html5Mode(true).hashPrefix('!');
+  }]);

@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('commonsCloudAdminApp')
+angular.module('commonsCloudFormApp')
   .provider('Field', function () {
 
     this.$get = ['$resource', function ($resource) {

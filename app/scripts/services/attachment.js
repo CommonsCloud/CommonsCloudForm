@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('commonsCloudAdminApp')
+angular.module('commonsCloudFormApp')
   .provider('Attachment', function () {
 
     this.$get = ['$resource', function ($resource) {
