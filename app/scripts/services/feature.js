@@ -3,7 +3,7 @@
 angular.module('commonsCloudFormApp')
   .provider('Feature', function () {
 
-    this.$get = ['$resource', 'Template', function ($resource, Template) {
+    this.$get = ['$resource', 'Template', '$rootScope', function ($resource, Template, $rootScope) {
 
       var Feature = $resource('//api.commonscloud.org/v2/:storage.json', {
 
@@ -16,7 +16,7 @@ angular.module('commonsCloudFormApp')
           }
         },
         postFiles: {
-          method: 'PUT',
+          method: 'PATCH',
           url: '//api.commonscloud.org/v2/:storage/:featureId.json',
           transformRequest: angular.identity,
           headers: {
@@ -124,6 +124,30 @@ angular.module('commonsCloudFormApp')
 
         return promise;
       }
+
+      Feature.CreateFeature = function(options) {
+
+        console.log(options);
+
+        var promise = Feature.save({
+            storage: options.storage
+          }, options.data).$promise.then(function(response) {
+
+            var feature_id = response.resource_id;
+
+            return feature_id;
+          }, function(error) {
+            $rootScope.alerts = [];
+            $rootScope.alerts.push({
+              'type': 'error',
+              'title': 'Uh-oh!',
+              'details': 'Mind trying that again? We couldn\'t find the Feature you were looking for.'
+            });
+            console.error(error);
+          });
+
+        return promise;
+      };
 
       return Feature;
     }];
