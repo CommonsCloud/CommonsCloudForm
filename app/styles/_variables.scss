@@ -1,0 +1,42 @@
+//
+// _variables.scss
+//
+// This stylesheet is written in SASS(1) and contains variables that apply to
+// the site as a whole. This makes us more effective in retaining a consistency
+// throughout the entire site.
+//
+// @see (1) http://sass-lang.com/documentation/file.SASS_REFERENCE.html
+//
+
+
+//
+// Color Variables
+//
+$color-black-base: rgb(36,31,32);
+$color-black-lighter: rgb(96,91,92);
+$color-black-lightest: rgb(126,121,122);
+
+$color-white-base: rgb(245,245,245);
+$color-white-darker: rgb(232,232,232);
+$color-white-dark: rgb(225,225,225);
+
+$color-blue-base: rgb(0,166,204);
+
+$color-green-base: rgb(168,205,61);
+
+$color-gold-base: rgb(253, 218, 46);
+
+$color-red-base: rgb(195, 7, 19);
+
+$color-grid-background: rgb(244, 193, 189);
+$color-grid-border: rgb(243, 67, 18);
+
+
+//
+// Typography Variables
+//
+$font-serif: "Times New Roman", "Times", serif;;
+$font-sans: "helvetica neue", "helvetica", arial, sans-serif;
+$font-sans-plain: "helvetica neue", "helvetica", arial, sans-serif;
+
+
