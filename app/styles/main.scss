@@ -88,3 +88,89 @@ body {
     border-bottom: 0;
   }
 }
+
+
+.drop {
+  border: 2px darken(white, 10%) dashed;
+  color: black;
+  margin: 0 0 32px;
+  padding: 15px;
+  text-align: center;
+
+  &.dragover {
+    background-color: #16ACD4;
+    color: white;
+  }
+
+  .btn {
+    position: relative;
+
+    input {
+      height: 100%;
+      left: 0;
+      opacity: 0;
+      -khtml-opacity: 0;
+      -moz-opacity: 0;
+      position: absolute;
+      top: 0;
+      width: 100%;
+    }
+  }
+
+  .upload {
+    color: darken(white, 5%);
+    display: block;
+    font-size: 64px;
+    line-height: 1.2;
+  }
+
+  .label-dragdrop {
+    font-size: 16px;
+    font-weight: 200;
+    line-height: 1;
+    margin-top: 16px;
+  }
+
+  .label-or {
+    font-family: Georgia, Times, serif;
+    font-size: 12px;
+    font-weight: 200;
+    line-height: 1;
+    margin-bottom: 10px;
+  }
+}
+
+.transfer-box {
+  margin-bottom: 5px;
+  .progress {
+    margin-bottom: 0;
+  }
+}
+
+.thumbnail {
+  border: 0;
+  line-height: 20px;
+  margin-bottom: 5px;
+  overflow: hidden;
+  word-break: normal;
+
+  img {
+    float: none !important;
+    max-width: 200px;
+    max-height: 150px;
+  }
+}
+
+.upload-list {
+  padding: 5px;
+  margin: 7px;
+  border-bottom: 1px solid darken(white, 5%);
+
+  .form-group {
+    margin-bottom: 4px;
+  }
+
+  label {
+    font-size: 12px;
+  }
+}

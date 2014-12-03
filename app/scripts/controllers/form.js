@@ -8,7 +8,7 @@
  * Controller of the commonsCloudFormApp
  */
 angular.module('commonsCloudFormApp')
-  .controller('FormCtrl', ['$rootScope', '$scope', '$routeParams', '$window', '$timeout', '$location', '$http', 'template', 'fields', 'Feature', 'geolocation', 'leafletData', 'Site', '$route', function ($rootScope, $scope, $routeParams, $window, $timeout, $location, $http, template, fields, Feature, geolocation, leafletData, Site, $route) {
+  .controller('FormCtrl', ['$rootScope', '$scope', '$routeParams', '$window', '$timeout', '$location', '$http', 'template', 'fields', 'Feature', 'geolocation', 'leafletData', 'Site', '$route', 'moment', function ($rootScope, $scope, $routeParams, $window, $timeout, $location, $http, template, fields, Feature, geolocation, leafletData, Site, $route, moment) {
 
     $scope.page = {
       template: '/views/form.html'
@@ -20,8 +20,8 @@ angular.module('commonsCloudFormApp')
     console.log('$scope.template', $scope.template);
 
     $scope.feature = new Feature();
-    $scope.feature.status = 'public';
-    $scope.files = {};
+    $scope.feature.status = 'crowd';
+    $scope.files = [];
 
 
     //
@@ -102,65 +102,117 @@ angular.module('commonsCloudFormApp')
       });
     });
 
-    $scope.$watch('feature.geometry', function(o, n) {
-      console.log(o, n)
-    });
+    $scope.data = {
+      process: function() {
 
-    $scope.processFeature = function () {
-      angular.forEach($scope.template.fields, function(field, index) {
+        //
+        // 1. Create a new FormData object
+        //
+        var data = new FormData();
 
-        if (field.data_type === 'relationship') {
-          console.log('$scope.feature[field.relationship]', $scope.feature[field.relationship]);
-          $scope.feature[field.relationship] = [
-            {
-              id: $scope.feature[field.relationship]
+        //
+        // 2. Process, field by field, all of the data from the form and add it to the FormData object
+        //
+        angular.forEach($scope.template.fields, function(field, $index) {
+          if (field.data_type === 'relationship') {
+            var key = field.relationship,
+                value = ($scope.feature[field.relationship] !== undefined && $scope.feature[field.relationship] !== null) ? '[{"id":' + $scope.feature[field.relationship] + '}]' : null;
+
+            if (value !== null) {
+              console.log('relationship found', key, value)
+              data.append(key, value);
             }
-          ];
+          } else if (field.data_type === 'date') {
+            
+            var clean_date = moment($scope.feature[field.name]);
+
+            var key = field.name,
+                value = clean_date.format('l');
+            data.append(key, value);
+          } else if (field.data_type !== 'file') {
+            // Process all other fields such as text, integer, and boolean
+            var key = field.name,
+                value = ($scope.feature[field.name] !== undefined && $scope.feature[field.name] !== null) ? $scope.feature[field.name] : null;
+
+            if (value !== null) {
+              data.append(key, value);
+            }
+          }
+        });
+
+        //
+        // 3. Handle the geometry separately from the rest of the fields
+        //
+        data.append('geometry', JSON.stringify($scope.feature.geometry));
+
+        //
+        // 4. Process the attached files
+        //
+        angular.forEach($scope.files, function(file, $index) {
+          console.log('file.field', file.field);
+          data.append(file.field, file.file);
+        });
+
+        //
+        // 5. Return the finalized FormData object ready for submission
+        //
+        return data;
+      },
+      save: function() {
+
+        var data = $scope.data.process();
+
+        $http.post('//api.commonscloud.org/v2/' + $scope.template.storage + '.json', data, {
+            transformRequest: angular.identity,
+            headers: {
+              'Content-Type': undefined
+            }
+          })
+          .success(function(response){
+            console.log('$scope.data.save::response', response);
+            $route.reload();
+          })
+          .error(function(error){
+            console.error('$scope.data.save::error', error);
+          });
+
+      }
+    };
+
+    $scope.onFileRemove = function(file, field_name, index) {
+      $scope.files.splice(index, 1);
+    };
+
+    $scope.onFileSelect = function(files, field_name) {
+
+      console.log('files', files)
+
+      console.log('field_name', field_name)
+
+      angular.forEach(files, function(file, index) {
+        // Check to see if we can load previews
+        if (window.FileReader && file.type.indexOf('image') > -1) {
+
+          var fileReader = new FileReader();
+          fileReader.readAsDataURL(file);
+          fileReader.onload = function (event) {
+            file.preview = event.target.result;
+            $scope.files.push({
+              'field': field_name,
+              'file': file
+            });
+            $scope.$apply();
+          };
+        } else {
+          $scope.files.push({
+            'field': field_name,
+            'file': file
+          });
+          $scope.$apply();
         }
-
-      });
-    };
-
-    $scope.save = function() {
-
-      //
-      // Preprocess all relationships prior to save.
-      //
-      // $scope.feature = $scope.processFeature();
-
-      console.log('$scope.feature to before geometry', $scope.feature);
-
-      $scope.feature.geometry = JSON.stringify($scope.feature.geometry);
-
-      console.log('$scope.feature to save', $scope.feature);
-
-      $scope.feature.$save({
-        storage: $scope.template.storage
-      }).then(function(response) {
-
-        console.log('here we go', response)
-
-        var fileData = new FormData();
-
-        angular.forEach($scope.files, function(file, index) {
-          fileData.append(file.field, file.file);
-        });
-
-        Feature.postFiles({
-          storage: $scope.template.storage,
-          featureId: $scope.feature.id
-        }, fileData).$promise.then(function(response) {
-          console.log('Update fired', response);
-          $scope.feature = response.response;
-          $route.reload();
-        }, function(error) {
-          console.log('Update failed!!!!', error);
-        });
-      }).then(function(error) {
-        console.error(error);
-        $route.reload();
       });
 
     };
+
 
   }]);

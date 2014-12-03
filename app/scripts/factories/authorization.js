@@ -27,8 +27,8 @@ angular.module('commonsCloudFormApp')
         // }
 
         config.headers = config.headers || {};
+        config.headers.Authorization = 'Bearer cZcGqLUGKWTF4cF8KRsQuT3nWT8tWz';
         // if (session_cookie) {
-        //   config.headers.Authorization = 'Bearer ' + session_cookie;
         // }
 
         config.headers['Cache-Control'] = 'no-cache, max-age=0, must-revalidate';

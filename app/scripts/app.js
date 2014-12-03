@@ -17,7 +17,8 @@ angular
     'leaflet-directive',
     'angularFileUpload',
     'geolocation',
-    'monospaced.elastic'
+    'monospaced.elastic',
+    'angularMoment'
   ])
   .config(['$routeProvider', '$locationProvider', '$httpProvider', function($routeProvider, $locationProvider, $httpProvider) {
 
