@@ -49,14 +49,14 @@
 
                   <div data-ng-if="field.data_type === 'file'" class="file-wrapper">
                     <div class="drop align-center" data-ng-file-drop="onFileSelect($files, field.relationship)" data-ng-file-drag-over-class="dragover">
-                      <span class="glyphicon glyphicon-cloud-upload upload"></span>
+<!--                       <span class="glyphicon glyphicon-cloud-upload upload"></span>
                       <p class="label-dragdrop">Drag and drop your files here</p>
                       <p class="label-or"><em>or</em></p>
-                      <span class="btn btn-default">Choose files to upload <input type="file" data-ng-file-select="onFileSelect($files, field.relationship)" multiple="multiple" /></span>
+ -->                      <span class="btn btn-default">Choose files to upload <input type="file" data-ng-file-select="onFileSelect($files, field.relationship)" multiple="multiple" /></span>
                     </div>
 
                     <div class="row upload-list" data-ng-repeat="file in files track by $index">
-                      <div class="column-16 thumbnail align-center">
+                      <div class="column-16 thumbnail text-center">
                         <img data-ng-if="file.file.preview" data-ng-src="{{ file.file.preview }}" />
                         <img data-ng-if="file.filepath" data-ng-src="http://{{ file.filepath }}" />
                         <p class="help-block"><small data-ng-if="file.file.name">{{ file.file.name }}</small><small  data-ng-if="file.filename">{{ file.filename }}</small></p>
